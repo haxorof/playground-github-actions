@@ -1,18 +1,22 @@
 name: Test
 on: 
   workflow_dispatch:
-
+    inputs:
+      image:
+        description: 'Docker image'     
+        required: true
+        default: 'haxorof/ansible:v2.10'
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-            
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/haxorof/ansible:v2.10'
+          image-ref: 'docker.io/${{ github.event.inputs.image }}'
           format: 'template'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
